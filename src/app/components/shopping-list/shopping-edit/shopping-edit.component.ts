@@ -23,7 +23,10 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.form = new FormGroup({
       name: new FormControl(null, Validators.required),
-      amount: new FormControl(null),
+      amount: new FormControl(null, [
+        Validators.required,
+        Validators.pattern(/^[1-9]+[0-9]*$/),
+      ]),
     });
 
     this.editItemSusbscription =
@@ -46,8 +49,11 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     //   this.nameInputRef.nativeElement.value,
     //   +this.amountInputRef.nativeElement.value
     // );
+    if (this.form.invalid) return;
+
     const { name, amount } = this.form?.value;
     const newIngredient = new Ingredient(name, amount);
+
     if (this.editMode) {
       this.shoppingListService.updateIngredient(
         this.editedItemIdx,
